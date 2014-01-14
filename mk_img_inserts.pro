@@ -12,8 +12,8 @@ TARGET = mk_img_inserts
 TEMPLATE = app
 
 
-SOURCES += main.C\
-        make_image_inserts.C
+SOURCES += main.cpp\
+        make_image_inserts.cpp
 
 HEADERS  += make_image_inserts.h
 

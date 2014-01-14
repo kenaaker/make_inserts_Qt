@@ -38,7 +38,8 @@ void make_image_inserts::on_actionQuit_triggered()
 }
 
 const geom_angle *convert_str_to_geom(QString in_str) {
-    QRegExp rx("[0-9]+\\x[0-9]+\\+[0-9]+\\+[0-9]+($|/[0-9]+$");
+    QRegExp rx("([0-9]+)x([0-9]+)\\+([0-9]+)\\+([0-9]+)($|/[0-9]+$)");
+//    QRegExp rx("[0-9]+x[0-9]+");
     geom_angle *new_geom = new geom_angle;
     enum geom_order { geom_width,
                       geom_height,
@@ -53,40 +54,42 @@ const geom_angle *convert_str_to_geom(QString in_str) {
     int rotation = 0;
 
     bool error = false;
-
-    if (rx.indexIn(in_str) != -1) {
+    int regexp_rc;
+    regexp_rc = rx.indexIn(in_str);
+    if (regexp_rc != -1) {
         QStringList list = rx.capturedTexts();
-        QStringList::iterator it = list.begin();
+        /* The first match is the whole string, so skip it */
+        QStringList::iterator it = ++list.begin();
         int item = geom_width;
-        while (it != list.end()) {
-            string_to_int(*it);
+        while ((it != list.end()) && (*it != "")) {
+            int converted_num = string_to_int(*it);
             switch(item) {
                 case geom_width:
-                    width = string_to_int(*it);
+                    width = converted_num;
                     break;
                 case geom_height:
-                    height = string_to_int(*it);
+                    height = converted_num;
                     break;
                 case geom_xoffset:
-                    xoffset = string_to_int(*it);
+                    xoffset = converted_num;
                     break;
                 case geom_yoffset:
-                    yoffset = string_to_int(*it);
+                    yoffset = converted_num;
                     break;
                 case geom_rotation:
-                    rotation = string_to_int(*it);
+                    rotation = converted_num;
                     break;
                 default:
                     error=true;
                     break;
             } /* endswitch */
-            if (!error) {
-                new_geom->geom = QRect(xoffset, yoffset, width, height);
-                new_geom->rotation_degrees = rotation;
-            } /* endif */
             ++it;
             ++item;
         } /* endwhile */
+        if (!error) {
+            new_geom->geom = QRect(xoffset, yoffset, width, height);
+            new_geom->rotation_degrees = rotation;
+        } /* endif */
     } else {
         new_geom->geom = QRect(0, 0, 0, 0);
         new_geom->rotation_degrees = 0;
@@ -116,7 +119,7 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
             if (this_key.startsWith("insert_loc_")) {
                 QListWidgetItem this_item;
                 this_value = new_template.text(this_key);
-                cout << "image text key= \"" << this_key.toAscii().constData() << "\" value=\"" << this_value.toAscii().constData() << "\"" << endl;
+                cout << "image text key= \"" << this_key.toLatin1().constData() << "\" value=\"" << this_value.toLatin1().constData() << "\"" << endl;
                 insert_strings.push_back(this_value);
                 insert_geoms.push_back(*convert_str_to_geom(this_value));
                 this_item.setText(this_value);
