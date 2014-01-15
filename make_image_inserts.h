@@ -21,19 +21,23 @@ class make_image_inserts;
 
 class geom_angle {
 public:
-    QRect geom;                 /* geometry location WxH+x+y */
+    QSize geom_size;            /* geometry WidthxHeight */
+    QPoint geom_where;          /* geometry location x+y */
     double rotation_degrees;    /* rotation of insertion image before insert */
     bool operator<(const geom_angle& rhs) const {
-        if ((geom.width()*geom.height()) < (rhs.geom.width()*rhs.geom.height())) {
+        if ((geom_size.width()*geom_size.height()) <
+                (rhs.geom_size.width()*rhs.geom_size.height())) {
             return true;
-        } else if ((geom.width()*geom.height()) > (rhs.geom.width()*rhs.geom.height())) {
+        } else if ((geom_size.width()*geom_size.height()) >
+                   (rhs.geom_size.width()*rhs.geom_size.height())) {
             return false;
         } else {
             return (rotation_degrees < rhs.rotation_degrees);
         } /* endif */
     } /* operator< */
     bool operator==(const geom_angle& rhs) const {
-        return ((geom == rhs.geom) &&
+        return ((geom_size == rhs.geom_size) &&
+                (geom_where == rhs.geom_where) &&
                 (rotation_degrees == rhs.rotation_degrees));
     } /* operator== */
 };
@@ -58,7 +62,8 @@ private slots:
 private:
     Ui::make_image_inserts *ui;
     QGraphicsScene template_scene;
-    QGraphicsPixmapItem template_image;
+    QGraphicsPixmapItem *template_item;
+    QImage template_image;
     QString insert_dir;
     QString template_dir;
     QStringList insert_strings;

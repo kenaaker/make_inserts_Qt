@@ -1,6 +1,9 @@
 #include "make_image_inserts.h"
 #include "ui_make_image_inserts.h"
 #include <iostream>
+#include <QMessageBox>
+#include <QPainter>
+
 using namespace std;
 
 static inline int string_to_int(QString s)
@@ -87,11 +90,13 @@ const geom_angle *convert_str_to_geom(QString in_str) {
             ++item;
         } /* endwhile */
         if (!error) {
-            new_geom->geom = QRect(xoffset, yoffset, width, height);
+            new_geom->geom_size = QSize(width, height);
+            new_geom->geom_where = QPoint(xoffset, yoffset);
             new_geom->rotation_degrees = rotation;
         } /* endif */
     } else {
-        new_geom->geom = QRect(0, 0, 0, 0);
+        new_geom->geom_size = QSize(0, 0);
+        new_geom->geom_where = QPoint(0, 0);
         new_geom->rotation_degrees = 0;
     } /* endif */
     return new_geom;
@@ -108,9 +113,10 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
                                                          tr("Open template image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
     if (template_file_name != "") {
         template_dir = QFileInfo(template_file_name).path();
-        QImage new_template(template_file_name);
-        template_scene.addItem(new QGraphicsPixmapItem(QPixmap::fromImage(new_template)));
-        img_keys = new_template.textKeys();
+        template_image = QImage(template_file_name);
+        template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
+        template_scene.addItem(template_item);
+        img_keys = template_image.textKeys();
         QStringList::ConstIterator i;
         for (i=img_keys.constBegin(); i != img_keys.constEnd(); ++i) {
             QString this_key;
@@ -118,7 +124,7 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
             this_key = *i;
             if (this_key.startsWith("insert_loc_")) {
                 QListWidgetItem this_item;
-                this_value = new_template.text(this_key);
+                this_value = template_image.text(this_key);
                 cout << "image text key= \"" << this_key.toLatin1().constData() << "\" value=\"" << this_value.toLatin1().constData() << "\"" << endl;
                 insert_strings.push_back(this_value);
                 insert_geoms.push_back(*convert_str_to_geom(this_value));
@@ -142,19 +148,53 @@ void make_image_inserts::on_actionOpenInsert_triggered()
         insert_dir = QFileInfo(insert_file_name).path();
         insert_images.push_back(QImage(insert_file_name));
         QListWidgetItem *new_insert = new QListWidgetItem(QIcon(insert_file_name), NULL, ui->listWidget);
-        new_insert->setData(Qt::UserRole, insert_images.count());
+        new_insert->setData(Qt::UserRole, insert_images.count()-1);
         ui->listWidget->insertItem(0, new_insert);
+        new_insert->setSelected(true);
     } /* endif */
 }
 
 void make_image_inserts::on_actionInsert_images_into_template_triggered()
 {
     QList<geom_angle>::iterator this_insert;
+    QImage tmp_img = template_image;
+    QImage result(tmp_img.width(), tmp_img.height(), QImage::Format_ARGB32_Premultiplied);
+    QPainter pt(&result);
+    pt.drawImage(QPoint(0,0), tmp_img);
+    pt.setBackgroundMode(Qt::TransparentMode);
+    bool error = false;
+
     for (this_insert = insert_geoms.begin(); this_insert != insert_geoms.end(); ++this_insert) {
         QList<QListWidgetItem *> current_selections(ui->listWidget->selectedItems());
-        QListWidgetItem *current_item;
-        current_item = *current_selections.begin();
-        QImage insert = insert_images[current_item->data(Qt::UserRole).toUInt()];
-        QImage scaled_insert;
+        if (current_selections.isEmpty()) {
+            QMessageBox select_an_insert;
+            select_an_insert.setText("Please select an image to insert");
+            select_an_insert.exec();
+            error = true;
+            break;
+        } else {
+            QListWidgetItem *current_item;
+            current_item = *current_selections.begin();
+            QImage insert = insert_images[current_item->data(Qt::UserRole).toUInt()];
+            QImage scaled_insert(this_insert->geom_size, QImage::Format_ARGB32_Premultiplied);
+
+            scaled_insert.fill(qRgba(0,0,0,0));
+            scaled_insert = insert.scaled(this_insert->geom_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            int inset_img_width = scaled_insert.width();
+            int inset_img_height = scaled_insert.height();
+            int geom_width = this_insert->geom_size.width();
+            int geom_height = this_insert->geom_size.height();
+            int center_x_offset = geom_width/2 - inset_img_width/2;
+            int center_y_offset = geom_height/2 - inset_img_height/2;
+            this_insert->geom_where.setX(this_insert->geom_where.x() + center_x_offset);
+            this_insert->geom_where.setY(this_insert->geom_where.y() + center_y_offset);
+//            pt.translate(QPoint(inset_img_width/2, inset_img_height/2));
+//            pt.rotate(90);
+//            pt.translate(QPoint(-inset_img_width/2, -inset_img_height/2));
+            pt.drawImage(this_insert->geom_where, scaled_insert);
+        } /* endif */
     } /* endfor */
+    if (!error) {
+        template_item->setPixmap(QPixmap::fromImage(result));
+    } /* endif */
 }
