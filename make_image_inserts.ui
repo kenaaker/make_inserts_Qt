@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
-    <height>599</height>
+    <width>936</width>
+    <height>618</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -92,8 +92,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>276</width>
-             <height>480</height>
+             <width>295</width>
+             <height>499</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -219,16 +219,16 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="edit_insert_button">
+              <widget class="QPushButton" name="update_insert_button">
                <property name="text">
-                <string>Edit Selected Insertion Point</string>
+                <string>Update Selected Insertion Point</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="delete_insert_button">
                <property name="text">
-                <string>Delete insertion point</string>
+                <string>Delete selected insertion point</string>
                </property>
               </widget>
              </item>
@@ -254,17 +254,90 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Insertion Point</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>79</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_6">
+              <item>
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="w_label">
+                  <property name="text">
+                   <string>width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="width">
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="h_label">
+                  <property name="text">
+                   <string>height</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="height">
+                  <property name="maxLength">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="xoff_label">
+                  <property name="text">
+                   <string>x offset</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="xoffset">
+                  <property name="maxLength">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="yoff_label">
+                  <property name="text">
+                   <string>y offset</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="yoffset">
+                  <property name="maxLength">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="rot_label">
+                  <property name="text">
+                   <string>rotation</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="rotation">
+                  <property name="maxLength">
+                   <number>3</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -280,7 +353,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>880</width>
+     <width>936</width>
      <height>19</height>
     </rect>
    </property>

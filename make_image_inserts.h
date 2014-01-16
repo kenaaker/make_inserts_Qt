@@ -12,11 +12,42 @@
 #include <QDir>
 #include <QStringListIterator>
 #include <QRect>
-#include <sstream>
 #include <QRegExp>
+#include <sstream>
+#include <iostream>
 
 namespace Ui {
 class make_image_inserts;
+}
+
+static inline int string_to_int(std::string s)
+{
+    std::stringstream ss(s);
+    int x;
+    ss >> x;
+    return x;
+}
+
+static inline std::string int_to_string(int i)
+{
+    std::stringstream ss;
+    ss << i;
+    return ss.str();
+}
+
+static inline int QString_to_int(QString s)
+{
+    std::stringstream ss(s.toStdString());
+    int x;
+    ss >> x;
+    return x;
+}
+
+static inline QString int_to_QString(int i)
+{
+    std::stringstream ss;
+    ss << i;
+    return QString::fromStdString(ss.str());
 }
 
 class geom_angle {
@@ -40,6 +71,15 @@ public:
                 (geom_where == rhs.geom_where) &&
                 (rotation_degrees == rhs.rotation_degrees));
     } /* operator== */
+    QString text(void) {
+        QString ret;
+        ret = int_to_QString(geom_size.width()) + "x" +int_to_QString(geom_size.height());
+        ret += "+" + int_to_QString(geom_where.x()) + "+" +int_to_QString(geom_where.y());
+        if (rotation_degrees != 0.0) {
+            ret += "/" + int_to_QString(rotation_degrees);
+        }
+        return ret;
+    } /* text */
 };
 
 class make_image_inserts : public QMainWindow
@@ -65,9 +105,11 @@ private slots:
 
     void on_add_insert_button_clicked();
 
-    void on_edit_insert_button_clicked();
+    void on_update_insert_button_clicked();
 
     void on_delete_insert_button_clicked();
+
+    void on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *);
 
 private:
     Ui::make_image_inserts *ui;
