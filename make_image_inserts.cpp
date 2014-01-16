@@ -106,6 +106,9 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
         template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
         template_scene.addItem(template_item);
         img_keys = template_image.textKeys();
+        insert_strings.clear();
+        insert_geoms.clear();
+        ui->insertion_points->clear();
         QStringList::ConstIterator i;
         for (i=img_keys.constBegin(); i != img_keys.constEnd(); ++i) {
             QString this_key;
@@ -225,7 +228,7 @@ void make_image_inserts::on_actionSave_As_triggered()
     QString file_name;
     bool save_error;
 
-    file_name = save_result_dialog.getOpenFileName(this,
+    file_name = save_result_dialog.getSaveFileName(this,
          tr("Save result image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
     if (file_name != "") {
         result_file_name = file_name;
