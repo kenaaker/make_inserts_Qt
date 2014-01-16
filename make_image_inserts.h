@@ -63,6 +63,12 @@ private slots:
 
     void on_actionSave_As_triggered();
 
+    void on_add_insert_button_clicked();
+
+    void on_edit_insert_button_clicked();
+
+    void on_delete_insert_button_clicked();
+
 private:
     Ui::make_image_inserts *ui;
     QGraphicsScene template_scene;
@@ -75,6 +81,7 @@ private:
     QStringList insert_strings;
     QList<geom_angle> insert_geoms;
     QList<QImage> insert_images;
+    QList<QListWidgetItem *> removed_inserts;
 };
 
 #endif // MAKE_IMAGE_INSERTS_H

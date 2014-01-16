@@ -92,7 +92,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>296</width>
+             <width>276</width>
              <height>480</height>
             </rect>
            </property>
@@ -180,7 +180,7 @@
        <property name="title">
         <string>Template Image</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QGraphicsView" name="graphicsView">
           <property name="sizePolicy">
@@ -201,53 +201,73 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>98</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QListWidget" name="insertion_points">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>99</height>
-             </size>
-            </property>
-            <property name="whatsThis">
-             <string extracomment="These are the places where the image will be inserted"/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>108</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Logo insertion points.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QPushButton" name="add_insert_button">
+               <property name="text">
+                <string>Add insertion point</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="edit_insert_button">
+               <property name="text">
+                <string>Edit Selected Insertion Point</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="delete_insert_button">
+               <property name="text">
+                <string>Delete insertion point</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QListWidget" name="insertion_points">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>99</height>
+              </size>
+             </property>
+             <property name="whatsThis">
+              <string extracomment="These are the places where the image will be inserted"/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>79</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>

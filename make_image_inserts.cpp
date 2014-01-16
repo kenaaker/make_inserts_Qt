@@ -178,6 +178,7 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
             double rotation = this_insert->rotation_degrees;
             QMatrix rm;
             rm.rotate(rotation);
+            QPoint where;
             current_item = *current_selections.begin();
             QImage insert = insert_images[current_item->data(Qt::UserRole).toUInt()].transformed(rm, Qt::SmoothTransformation);
             QImage scaled_insert(this_insert->geom_size, QImage::Format_ARGB32_Premultiplied);
@@ -190,12 +191,13 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
             int geom_height = this_insert->geom_size.height();
             int center_x_offset = geom_width/2 - inset_img_width/2;
             int center_y_offset = geom_height/2 - inset_img_height/2;
-            this_insert->geom_where.setX(this_insert->geom_where.x() + center_x_offset);
-            this_insert->geom_where.setY(this_insert->geom_where.y() + center_y_offset);
+            where = this_insert->geom_where;
+            where.setX(where.x() + center_x_offset);
+            where.setY(where.y() + center_y_offset);
 //            pt.translate(QPoint(inset_img_width/2, inset_img_height/2));
 //            pt.rotate(90);
 //            pt.translate(QPoint(-inset_img_width/2, -inset_img_height/2));
-            pt.drawImage(this_insert->geom_where, scaled_insert);
+            pt.drawImage(where, scaled_insert);
         } /* endif */
     } /* endfor */
     if (!error) {
@@ -240,3 +242,30 @@ void make_image_inserts::on_actionSave_As_triggered()
     }
 
 }
+
+void make_image_inserts::on_add_insert_button_clicked()
+{
+
+}
+
+void make_image_inserts::on_edit_insert_button_clicked()
+{
+
+}
+
+void make_image_inserts::on_delete_insert_button_clicked()
+{
+    QList<QListWidgetItem *> selected_inserts = ui->insertion_points->selectedItems();
+
+    /* One level of un-do for the moment */
+    if (!removed_inserts.isEmpty()) {
+        qDeleteAll(removed_inserts);
+    } /* endif */
+    removed_inserts = selected_inserts;
+
+    for (int i=0; i<selected_inserts.size(); i++) {
+        insert_geoms.removeAt(ui->insertion_points->row(selected_inserts[i]));
+        ui->insertion_points->takeItem(ui->insertion_points->row(selected_inserts[i]));
+    } /* endfor */
+
+} /* on_delete_insert_button_clicked */
