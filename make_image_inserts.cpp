@@ -41,7 +41,7 @@ void make_image_inserts::on_actionQuit_triggered()
 }
 
 const geom_angle *convert_str_to_geom(QString in_str) {
-    QRegExp rx("([0-9]+)x([0-9]+)\\+([0-9]+)\\+([0-9]+)($|/[0-9]+$)");
+    QRegExp rx("([0-9]+)x([0-9]+)\\+([0-9]+)\\+([0-9]+)(?:$|/([0-9]+)$)");
 //    QRegExp rx("[0-9]+x[0-9]+");
     geom_angle *new_geom = new geom_angle;
     enum geom_order { geom_width,
@@ -174,8 +174,11 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
             break;
         } else {
             QListWidgetItem *current_item;
+            double rotation = this_insert->rotation_degrees;
+            QMatrix rm;
+            rm.rotate(rotation);
             current_item = *current_selections.begin();
-            QImage insert = insert_images[current_item->data(Qt::UserRole).toUInt()];
+            QImage insert = insert_images[current_item->data(Qt::UserRole).toUInt()].transformed(rm, Qt::SmoothTransformation);
             QImage scaled_insert(this_insert->geom_size, QImage::Format_ARGB32_Premultiplied);
 
             scaled_insert.fill(qRgba(0,0,0,0));
