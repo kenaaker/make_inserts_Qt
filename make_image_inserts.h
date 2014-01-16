@@ -59,11 +59,17 @@ private slots:
 
     void on_actionInsert_images_into_template_triggered();
 
+    void on_actionSave_triggered();
+
+    void on_actionSave_As_triggered();
+
 private:
     Ui::make_image_inserts *ui;
     QGraphicsScene template_scene;
     QGraphicsPixmapItem *template_item;
     QImage template_image;
+    QImage result_image;
+    QString result_file_name;
     QString insert_dir;
     QString template_dir;
     QStringList insert_strings;

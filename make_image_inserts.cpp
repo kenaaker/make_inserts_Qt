@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <QPainter>
+#include <QImageWriter>
 
 using namespace std;
 
@@ -199,5 +200,43 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
     } /* endfor */
     if (!error) {
         template_item->setPixmap(QPixmap::fromImage(result));
+        result_image = result;
     } /* endif */
+}
+
+void make_image_inserts::on_actionSave_triggered()
+{
+    bool save_error;
+    if (result_file_name.isEmpty()) {
+        on_actionSave_As_triggered();
+    } else {
+        QImageWriter save_writer(result_file_name);
+        save_error = !save_writer.write(result_image);
+        if (save_error) {
+            QMessageBox file_save_error;
+            file_save_error.setText("Unable to save result file" + save_writer.errorString());
+            file_save_error.exec();
+        } /* endif */
+    } /* endif */
+} /* Save to existing result file */
+
+void make_image_inserts::on_actionSave_As_triggered()
+{
+    QFileDialog save_result_dialog;
+    QString file_name;
+    bool save_error;
+
+    file_name = save_result_dialog.getOpenFileName(this,
+         tr("Save result image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
+    if (file_name != "") {
+        result_file_name = file_name;
+        QImageWriter save_writer(result_file_name);
+        save_error = !save_writer.write(result_image);
+        if (save_error) {
+            QMessageBox file_save_error;
+            file_save_error.setText("Unable to save result file" + save_writer.errorString());
+            file_save_error.exec();
+        } /* endif */
+    }
+
 }
