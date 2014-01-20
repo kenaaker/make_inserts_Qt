@@ -249,7 +249,7 @@ void make_image_inserts::on_actionSave_As_triggered()
     QString file_name;
     bool save_error = false;
 
-    file_name = save_result_dialog.getOpenFileName(this,
+    file_name = save_result_dialog.getSaveFileName(this,
          tr("Save result image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
     if (file_name != "") {
         result_file_name = file_name;
