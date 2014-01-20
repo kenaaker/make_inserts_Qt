@@ -22,10 +22,13 @@ class make_image_inserts;
 
 static inline int string_to_int(std::string s)
 {
-    std::stringstream ss(s);
+    std::istringstream ss(s);
     int x;
-    ss >> x;
-    return x;
+    if (ss >> x) {
+        return x;
+    } else {
+        return 0;
+    }
 }
 
 static inline std::string int_to_string(int i)
@@ -39,7 +42,11 @@ static inline int QString_to_int(QString s)
 {
     std::stringstream ss(s.toStdString());
     int x;
-    ss >> x;
+    if (ss >> x) {
+        return x;
+    } else {
+        return 0;
+    }
     return x;
 }
 

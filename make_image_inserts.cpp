@@ -11,6 +11,7 @@ make_image_inserts::make_image_inserts(QWidget *parent) :
     ui(new Ui::make_image_inserts)
 {
     ui->setupUi(this);
+    template_item = NULL;
     ui->graphicsView->setScene(&template_scene);
     ui->width->setInputMask("9999");
     ui->height->setInputMask("9999");
@@ -103,9 +104,17 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
     if (template_file_name != "") {
         template_dir = QFileInfo(template_file_name).path();
         template_image = QImage(template_file_name);
+        if (template_item != NULL) {
+            template_scene.removeItem(template_item);
+            delete template_item;
+            template_item = NULL;
+        }
         template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
         template_scene.addItem(template_item);
         img_keys = template_image.textKeys();
+        insert_strings.clear();
+        insert_geoms.clear();
+        ui->insertion_points->clear();
         QStringList::ConstIterator i;
         for (i=img_keys.constBegin(); i != img_keys.constEnd(); ++i) {
             QString this_key;
@@ -150,6 +159,16 @@ static void copy_text_keys(QImage &out, QImage &in) {
         QString this_value;
         this_key = *i;
         this_value = in.text(this_key);
+        out.setText(this_key, this_value);
+    } /* endfor */
+} /* copy_text_keys */
+
+static void set_inserts(QImage &out, QStringList &inserts) {
+
+    for (int i=0; i < inserts.count(); ++i) {
+        QString this_key = "insert_loc_" + int_to_QString(i);
+        QString this_value;
+        this_value = inserts[i];
         out.setText(this_key, this_value);
     } /* endfor */
 } /* copy_text_keys */
@@ -205,15 +224,20 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
 
 void make_image_inserts::on_actionSave_triggered()
 {
-    bool save_error;
+    bool save_error = false;
     if (result_file_name.isEmpty()) {
         on_actionSave_As_triggered();
     } else {
         QImageWriter save_writer(result_file_name);
+        /* This covers the case where the template file is being prepped */
+        if (result_image.isNull()) {
+            result_image = template_image;
+        }
+        set_inserts(result_image, insert_strings);
         save_error = !save_writer.write(result_image);
         if (save_error) {
             QMessageBox file_save_error;
-            file_save_error.setText("Unable to save result file" + save_writer.errorString());
+            file_save_error.setText("Unable to save result file " + save_writer.errorString());
             file_save_error.exec();
         } /* endif */
     } /* endif */
@@ -223,17 +247,22 @@ void make_image_inserts::on_actionSave_As_triggered()
 {
     QFileDialog save_result_dialog;
     QString file_name;
-    bool save_error;
+    bool save_error = false;
 
     file_name = save_result_dialog.getOpenFileName(this,
          tr("Save result image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
     if (file_name != "") {
         result_file_name = file_name;
         QImageWriter save_writer(result_file_name);
+        /* This covers the case where the template file is being prepped */
+        if (result_image.isNull()) {
+            result_image = template_image;
+        }
+        set_inserts(result_image, insert_strings);
         save_error = !save_writer.write(result_image);
         if (save_error) {
             QMessageBox file_save_error;
-            file_save_error.setText("Unable to save result file" + save_writer.errorString());
+            file_save_error.setText("Unable to save result file " + save_writer.errorString());
             file_save_error.exec();
         } /* endif */
     }
