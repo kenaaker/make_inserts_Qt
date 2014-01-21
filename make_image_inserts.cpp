@@ -104,11 +104,12 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
     if (template_file_name != "") {
         template_dir = QFileInfo(template_file_name).path();
         template_image = QImage(template_file_name);
+        result_image = QImage();
         if (template_item != NULL) {
             template_scene.removeItem(template_item);
             delete template_item;
             template_item = NULL;
-        }
+        } /* endif */
         template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
         template_scene.addItem(template_item);
         img_keys = template_image.textKeys();
