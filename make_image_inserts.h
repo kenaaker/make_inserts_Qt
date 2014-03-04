@@ -97,6 +97,9 @@ public:
     explicit make_image_inserts(QWidget *parent = 0);
     ~make_image_inserts();
 
+public slots:
+    void make_image_insert_add_files(QStringList *new_files);
+
 private slots:
     void on_actionQuit_triggered();
 

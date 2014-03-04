@@ -113,7 +113,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QListWidget" name="listWidget">
+             <widget class="DnDQListWidget" name="listWidget">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -139,7 +139,7 @@
                <bool>true</bool>
               </property>
               <property name="dragDropMode">
-               <enum>QAbstractItemView::DropOnly</enum>
+               <enum>QAbstractItemView::DragDrop</enum>
               </property>
               <property name="defaultDropAction">
                <enum>Qt::CopyAction</enum>
@@ -432,6 +432,36 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>DnDQListWidget</class>
+   <extends>QListWidget</extends>
+   <header>dndqlistwidget.h</header>
+   <slots>
+    <signal>files_dropped(QStringList*)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>files_dropped(QStringList*)</signal>
+   <receiver>make_image_inserts</receiver>
+   <slot>make_image_insert_add_files(QStringList*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>132</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>220</x>
+     <y>-10</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>make_image_inserts_add_files(QStringList*)</slot>
+ </slots>
 </ui>

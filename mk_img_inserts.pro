@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        make_image_inserts.cpp
+        make_image_inserts.cpp \
+    dndqlistwidget.cpp
 
-HEADERS  += make_image_inserts.h
+HEADERS  += make_image_inserts.h \
+    dndqlistwidget.h
 
 FORMS    += make_image_inserts.ui
