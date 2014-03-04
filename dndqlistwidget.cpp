@@ -36,11 +36,10 @@ void DnDQListWidget::dropEvent(QDropEvent *event) {
         QList<QUrl> urlList = mimeData->urls();
         QStringList new_files;
         for (int i = 0; i < urlList.size(); ++i) {
-            QString url = urlList.at(i).path();
+            QString url = urlList.at(i).toLocalFile();
             new_files.push_back(url);
-            emit files_dropped(&new_files);
         } /* endfor */
-
+        emit files_dropped(&new_files);
     } /* endif */
     event->acceptProposedAction();
 };

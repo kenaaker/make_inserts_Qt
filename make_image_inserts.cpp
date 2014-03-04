@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QImageWriter>
 #include <QStringList>
+#include <QDebug>
 
 using namespace std;
 
