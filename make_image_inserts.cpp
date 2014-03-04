@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QImageWriter>
+#include <QStringList>
 
 using namespace std;
 
@@ -135,18 +136,25 @@ void make_image_inserts::on_actionOpenInsert_triggered()
 {
     // Add a new insert image into the insert group.
     QFileDialog insert_dialog;
-    QString insert_file_name;
+    QStringList selected_file_names;
+    QStringList insert_file_names;
 
-    insert_file_name = insert_dialog.getOpenFileName(this,
-         tr("Open insert image file"), insert_dir, tr("Images (*.png *.jpg *.gif)"));
-    if (insert_file_name != "") {
-        QImage new_insert_image(insert_file_name);
-        insert_dir = QFileInfo(insert_file_name).path();
-        insert_images.push_back(QImage(insert_file_name));
-        QListWidgetItem *new_insert = new QListWidgetItem(QIcon(insert_file_name), NULL, ui->listWidget);
-        new_insert->setData(Qt::UserRole, insert_images.count()-1);
-        ui->listWidget->insertItem(0, new_insert);
-        new_insert->setSelected(true);
+    selected_file_names = insert_dialog.getOpenFileNames(this,
+         tr("Select 1 or more insert image file(s)"), insert_dir, tr("Images (*.png *.jpg *.gif)"));
+    if (!selected_file_names.isEmpty()) {
+        insert_file_names = selected_file_names;
+        QStringList::Iterator it = selected_file_names.begin();
+        while (it != selected_file_names.end()) {
+            QString insert_file_name = *it;
+            QImage new_insert_image(insert_file_name);
+            insert_dir = QFileInfo(insert_file_name).path();
+            insert_images.push_back(QImage(insert_file_name));
+            QListWidgetItem *new_insert = new QListWidgetItem(QIcon(insert_file_name), NULL, ui->listWidget);
+            new_insert->setData(Qt::UserRole, insert_images.count()-1);
+            ui->listWidget->insertItem(0, new_insert);
+            new_insert->setSelected(true);
+            ++it;
+        } /* endwhile */
     } /* endif */
 }
 
@@ -319,3 +327,18 @@ void make_image_inserts::on_update_insert_button_clicked()
     insert_geoms[ui->insertion_points->row(current)] = this_geom;
     current->setText(this_geom.text());
 }
+
+QStringList QListWidget::mimeTypes() const {
+    QStringList img_types;
+    img_types << "image/png" << "image/jpeg";
+    return img_types;
+}
+
+
+void QListWidget::dropEvent(QDropEvent * event) {
+
+}
+
+bool QListWidget::dropMimeData(int index, const QMimeData * data, Qt::DropAction action) {
+    return true;
+};
