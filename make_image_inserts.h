@@ -121,6 +121,8 @@ private slots:
 
     void on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *);
 
+    void on_actionClose_triggered();
+
 private:
     Ui::make_image_inserts *ui;
     QGraphicsScene template_scene;

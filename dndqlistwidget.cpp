@@ -26,10 +26,12 @@ void DnDQListWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void DnDQListWidget::dragEnterEvent(QDragEnterEvent *event) {
     event->acceptProposedAction();
-};
+}
+
 void DnDQListWidget::dragMoveEvent(QDragMoveEvent *event) {
     event->acceptProposedAction();
-};
+}
+
 void DnDQListWidget::dropEvent(QDropEvent *event) {
     const QMimeData *mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
@@ -43,7 +45,7 @@ void DnDQListWidget::dropEvent(QDropEvent *event) {
 
     } /* endif */
     event->acceptProposedAction();
-};
+}
 
 void DnDQListWidget::DnDstartDrag(void) {
     QListWidgetItem *item = currentItem();
@@ -57,4 +59,4 @@ void DnDQListWidget::DnDstartDrag(void) {
             delete item;
         } /* endif */
     } /* endif */
-};
+}

@@ -9,8 +9,7 @@ using namespace std;
 
 make_image_inserts::make_image_inserts(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::make_image_inserts)
-{
+    ui(new Ui::make_image_inserts) {
     ui->setupUi(this);
     template_item = NULL;
     ui->graphicsView->setScene(&template_scene);
@@ -21,13 +20,11 @@ make_image_inserts::make_image_inserts(QWidget *parent) :
     ui->rotation->setInputMask("000");
 }
 
-make_image_inserts::~make_image_inserts()
-{
+make_image_inserts::~make_image_inserts() {
     delete ui;
 }
 
-void make_image_inserts::on_actionQuit_triggered()
-{
+void make_image_inserts::on_actionQuit_triggered() {
     exit(0);
 }
 
@@ -93,15 +90,14 @@ const geom_angle *convert_str_to_geom(QString in_str) {
     return new_geom;
 }
 
-void make_image_inserts::on_actionOpenTemplateImage_triggered()
-{
+void make_image_inserts::on_actionOpenTemplateImage_triggered() {
     // Remove the current image from the Template area and load in a new one.
     QFileDialog template_dialog;
     QString template_file_name;
     QStringList img_keys;
 
     template_file_name = template_dialog.getOpenFileName(this,
-                                                         tr("Open template image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
+                tr("Open template image file"), template_dir, tr("Images (*.png *.jpg *.gif)"));
     if (template_file_name != "") {
         template_dir = QFileInfo(template_file_name).path();
         template_image = QImage(template_file_name);
@@ -110,6 +106,7 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
             template_scene.removeItem(template_item);
             delete template_item;
             template_item = NULL;
+            ui->actionInsert_images_into_template->setEnabled(false);
         } /* endif */
         template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
         template_scene.addItem(template_item);
@@ -127,10 +124,12 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered()
                 insert_strings.push_back(this_value);
                 insert_geoms.push_back(*convert_str_to_geom(this_value));
                 ui->insertion_points->addItem(this_value);
-            }
+            } /* endif */
         } /* endfor */
+        ui->actionInsert_images_into_template->setEnabled(true);
     } /* endif */
 }
+
 void make_image_inserts::make_image_insert_add_files(QStringList *new_files) {
     QStringList::ConstIterator it = new_files->begin();
     while (it != new_files->end()) {
@@ -146,8 +145,7 @@ void make_image_inserts::make_image_insert_add_files(QStringList *new_files) {
     } /* endwhile */
 }
 
-void make_image_inserts::on_actionOpenInsert_triggered()
-{
+void make_image_inserts::on_actionOpenInsert_triggered() {
     // Add a new insert image into the insert group.
     QFileDialog insert_dialog;
     QStringList selected_file_names;
@@ -185,8 +183,7 @@ static void set_inserts(QImage &out, QStringList &inserts) {
     } /* endfor */
 } /* copy_text_keys */
 
-void make_image_inserts::on_actionInsert_images_into_template_triggered()
-{
+void make_image_inserts::on_actionInsert_images_into_template_triggered() {
     QList<geom_angle>::iterator this_insert;
     QImage tmp_img = template_image;
     QImage result(tmp_img.width(), tmp_img.height(), QImage::Format_ARGB32_Premultiplied);
@@ -234,8 +231,7 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered()
     } /* endif */
 }
 
-void make_image_inserts::on_actionSave_triggered()
-{
+void make_image_inserts::on_actionSave_triggered() {
     bool save_error = false;
     if (result_file_name.isEmpty()) {
         on_actionSave_As_triggered();
@@ -255,8 +251,7 @@ void make_image_inserts::on_actionSave_triggered()
     } /* endif */
 } /* Save to existing result file */
 
-void make_image_inserts::on_actionSave_As_triggered()
-{
+void make_image_inserts::on_actionSave_As_triggered() {
     QFileDialog save_result_dialog;
     QString file_name;
     bool save_error = false;
@@ -281,8 +276,7 @@ void make_image_inserts::on_actionSave_As_triggered()
 
 }
 
-void make_image_inserts::on_add_insert_button_clicked()
-{
+void make_image_inserts::on_add_insert_button_clicked() {
     geom_angle this_geom;
     this_geom.geom_size = QSize(QString_to_int(ui->width->text()), QString_to_int(ui->height->text()));
     this_geom.geom_where =QPoint(QString_to_int(ui->xoffset->text()), QString_to_int(ui->yoffset->text()));
@@ -292,8 +286,7 @@ void make_image_inserts::on_add_insert_button_clicked()
     ui->insertion_points->addItem(this_geom.text());
 }
 
-void make_image_inserts::on_delete_insert_button_clicked()
-{
+void make_image_inserts::on_delete_insert_button_clicked() {
     QList<QListWidgetItem *> selected_inserts = ui->insertion_points->selectedItems();
 
     /* One level of un-do for the moment */
@@ -309,8 +302,7 @@ void make_image_inserts::on_delete_insert_button_clicked()
 
 } /* on_delete_insert_button_clicked */
 
-void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *)
-{
+void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
     geom_angle this_geom = insert_geoms.at(ui->insertion_points->row(current));
     ui->width->setText(QString::fromStdString(int_to_string(this_geom.geom_size.width())));
     ui->height->setText(QString::fromStdString(int_to_string(this_geom.geom_size.height())));
@@ -319,8 +311,7 @@ void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem 
     ui->rotation->setText(QString::fromStdString(int_to_string(this_geom.rotation_degrees)));
 }
 
-void make_image_inserts::on_update_insert_button_clicked()
-{
+void make_image_inserts::on_update_insert_button_clicked() {
     QListWidgetItem *current;
     geom_angle this_geom;
     current = ui->insertion_points->currentItem();
@@ -329,4 +320,13 @@ void make_image_inserts::on_update_insert_button_clicked()
     this_geom.rotation_degrees = (QString_to_int(ui->rotation->text()));
     insert_geoms[ui->insertion_points->row(current)] = this_geom;
     current->setText(this_geom.text());
+}
+
+void make_image_inserts::on_actionClose_triggered() {
+    if (template_item != NULL) {
+        template_scene.removeItem(template_item);
+        delete template_item;
+        template_item = NULL;
+        ui->actionInsert_images_into_template->setEnabled(false);
+    } /* endif */
 }

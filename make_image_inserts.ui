@@ -92,7 +92,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>255</width>
+             <width>244</width>
              <height>499</height>
             </rect>
            </property>
@@ -421,6 +421,9 @@
    </property>
   </action>
   <action name="actionInsert_images_into_template">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Insert images into template</string>
    </property>
