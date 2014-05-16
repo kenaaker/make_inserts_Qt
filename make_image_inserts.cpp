@@ -248,6 +248,8 @@ void make_image_inserts::on_actionSave_triggered() {
             QMessageBox file_save_error;
             file_save_error.setText("Unable to save result file " + save_writer.errorString());
             file_save_error.exec();
+        } else {
+            result_image = QImage();
         } /* endif */
     } /* endif */
 } /* Save to existing result file */
@@ -272,9 +274,10 @@ void make_image_inserts::on_actionSave_As_triggered() {
             QMessageBox file_save_error;
             file_save_error.setText("Unable to save result file " + save_writer.errorString());
             file_save_error.exec();
+        } else {
+            result_image = QImage();
         } /* endif */
-    }
-
+    } /* endif */
 }
 
 void make_image_inserts::on_add_insert_button_clicked() {
@@ -304,12 +307,14 @@ void make_image_inserts::on_delete_insert_button_clicked() {
 } /* on_delete_insert_button_clicked */
 
 void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
-    geom_angle this_geom = insert_geoms.at(ui->insertion_points->row(current));
-    ui->width->setText(QString::fromStdString(int_to_string(this_geom.geom_size.width())));
-    ui->height->setText(QString::fromStdString(int_to_string(this_geom.geom_size.height())));
-    ui->xoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.x())));
-    ui->yoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.y())));
-    ui->rotation->setText(QString::fromStdString(int_to_string(this_geom.rotation_degrees)));
+    if (current) {
+        geom_angle this_geom = insert_geoms.at(ui->insertion_points->row(current));
+        ui->width->setText(QString::fromStdString(int_to_string(this_geom.geom_size.width())));
+        ui->height->setText(QString::fromStdString(int_to_string(this_geom.geom_size.height())));
+        ui->xoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.x())));
+        ui->yoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.y())));
+        ui->rotation->setText(QString::fromStdString(int_to_string(this_geom.rotation_degrees)));
+    } /* endif */
 }
 
 void make_image_inserts::on_update_insert_button_clicked() {
@@ -320,6 +325,8 @@ void make_image_inserts::on_update_insert_button_clicked() {
     this_geom.geom_where =QPoint(QString_to_int(ui->xoffset->text()), QString_to_int(ui->yoffset->text()));
     this_geom.rotation_degrees = (QString_to_int(ui->rotation->text()));
     insert_geoms[ui->insertion_points->row(current)] = this_geom;
+    /* Watch out here, this assumes the lists are in the same order */
+    insert_strings[ui->insertion_points->row(current)] = (this_geom.text());
     current->setText(this_geom.text());
 }
 
@@ -329,5 +336,8 @@ void make_image_inserts::on_actionClose_triggered() {
         delete template_item;
         template_item = NULL;
         ui->actionInsert_images_into_template->setEnabled(false);
+        insert_strings.clear();
+        insert_geoms.clear();
+        ui->insertion_points->clear();
     } /* endif */
 }
