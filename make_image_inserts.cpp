@@ -117,7 +117,6 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered() {
         insert_geoms.clear();
         ui->insertion_points->clear();
         QStringList::ConstIterator i;
-        QGraphicsScene *template_scene = ui->graphicsView->scene();
         for (i=img_keys.constBegin(); i != img_keys.constEnd(); ++i) {
             QString this_key;
             QString this_value;
@@ -134,7 +133,7 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered() {
                 insert_rect->setTransformOriginPoint(working_geom.geom_size.width()/2, working_geom.geom_size.height()/2);
                 insert_rect->setRotation(working_geom.rotation_degrees);
                 insert_rect->setPos(QPointF(working_geom.geom_where));
-                template_scene->addItem(insert_rect);
+                template_scene.addItem(insert_rect);
             } /* endif */
         } /* endfor */
         ui->actionInsert_images_into_template->setEnabled(true);

@@ -201,6 +201,9 @@
           <property name="acceptDrops">
            <bool>true</bool>
           </property>
+          <property name="dragMode">
+           <enum>QGraphicsView::RubberBandDrag</enum>
+          </property>
          </widget>
         </item>
         <item>
