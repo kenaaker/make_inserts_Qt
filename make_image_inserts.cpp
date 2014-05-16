@@ -318,11 +318,21 @@ void make_image_inserts::on_delete_insert_button_clicked() {
 void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
     if (current) {
         geom_angle this_geom = insert_geoms.at(ui->insertion_points->row(current));
-        ui->width->setText(QString::fromStdString(int_to_string(this_geom.geom_size.width())));
-        ui->height->setText(QString::fromStdString(int_to_string(this_geom.geom_size.height())));
-        ui->xoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.x())));
-        ui->yoffset->setText(QString::fromStdString(int_to_string(this_geom.geom_where.y())));
-        ui->rotation->setText(QString::fromStdString(int_to_string(this_geom.rotation_degrees)));
+        QString item_string;
+        item_string = int_to_QString(this_geom.geom_size.width());
+        ui->width->setText(item_string);
+
+        item_string = int_to_QString(this_geom.geom_size.height());
+        ui->height->setText(item_string);
+
+        item_string = int_to_QString(this_geom.geom_where.x());
+        ui->xoffset->setText(item_string);
+
+        item_string = int_to_QString(this_geom.geom_where.y());
+        ui->yoffset->setText(item_string);
+
+        item_string = int_to_QString(this_geom.rotation_degrees);
+        ui->rotation->setText(item_string);
     } /* endif */
 }
 
