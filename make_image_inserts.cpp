@@ -107,6 +107,7 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered() {
             template_scene.removeItem(template_item);
             delete template_item;
             template_item = NULL;
+            template_scene.clear();
             ui->actionInsert_images_into_template->setEnabled(false);
         } /* endif */
         template_item = new QGraphicsPixmapItem(QPixmap::fromImage(template_image));
@@ -116,15 +117,24 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered() {
         insert_geoms.clear();
         ui->insertion_points->clear();
         QStringList::ConstIterator i;
+        QGraphicsScene *template_scene = ui->graphicsView->scene();
         for (i=img_keys.constBegin(); i != img_keys.constEnd(); ++i) {
             QString this_key;
             QString this_value;
             this_key = *i;
             if (this_key.startsWith("insert_loc_")) {
+                geom_angle working_geom;
+                QGraphicsRectItem *insert_rect;
                 this_value = template_image.text(this_key);
+                working_geom = *convert_str_to_geom(this_value);
                 insert_strings.push_back(this_value);
-                insert_geoms.push_back(*convert_str_to_geom(this_value));
+                insert_geoms.push_back(working_geom);
                 ui->insertion_points->addItem(this_value);
+                insert_rect = new QGraphicsRectItem(QRectF(QPoint(0,0), working_geom.geom_size));
+                insert_rect->setTransformOriginPoint(working_geom.geom_size.width()/2, working_geom.geom_size.height()/2);
+                insert_rect->setRotation(working_geom.rotation_degrees);
+                insert_rect->setPos(QPointF(working_geom.geom_where));
+                template_scene->addItem(insert_rect);
             } /* endif */
         } /* endfor */
         ui->actionInsert_images_into_template->setEnabled(true);
@@ -335,6 +345,7 @@ void make_image_inserts::on_actionClose_triggered() {
         template_scene.removeItem(template_item);
         delete template_item;
         template_item = NULL;
+        template_scene.clear();
         ui->actionInsert_images_into_template->setEnabled(false);
         insert_strings.clear();
         insert_geoms.clear();
