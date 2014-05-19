@@ -6,8 +6,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 
-class DnDQListWidget : public QListWidget
-{
+class DnDQListWidget : public QListWidget {
     Q_OBJECT
 public:
     explicit DnDQListWidget(QWidget *parent = 0);

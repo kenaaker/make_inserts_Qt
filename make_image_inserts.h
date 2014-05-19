@@ -78,7 +78,7 @@ public:
                 (geom_where == rhs.geom_where) &&
                 (rotation_degrees == rhs.rotation_degrees));
     } /* operator== */
-    QString text(void) {
+    QString text(void) const {
         QString ret;
         ret = int_to_QString(geom_size.width()) + "x" +int_to_QString(geom_size.height());
         ret += "+" + int_to_QString(geom_where.x()) + "+" +int_to_QString(geom_where.y());
