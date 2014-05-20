@@ -6,9 +6,10 @@ insert_rect::insert_rect(QGraphicsRectItem *parent) :
 
 }
 
-insert_rect::insert_rect(const QRectF &rect, QGraphicsItem *parent, const geom_angle *geom) :
+insert_rect::insert_rect(const QRectF &rect, QGraphicsItem *parent, geom_angle *geom, QListWidgetItem * l_item) :
     QGraphicsRectItem(rect, parent) {
     image_geom = geom;
+    list_item = l_item;
 }
 
 insert_rect::insert_rect(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent) :
@@ -21,15 +22,14 @@ QVariant insert_rect::itemChange(GraphicsItemChange change, const QVariant &valu
     switch (change) {
         case QGraphicsRectItem::ItemSelectedChange:
             selected_rect = value.toBool();
-            qDebug() << "Item Selection Changed. Item is " << image_geom->text();
-            if (selected_rect) {
-                qDebug() << "Selected";
-            } else {
-                qDebug() << "not Selected";
-            } /* endif */
+            list_item->setSelected(true);
             break;
         case QGraphicsRectItem::ItemPositionChange:
-            qDebug() << "Rectangle position changed";
+            /* Change the corresponding text */ {
+                QPoint new_pos = value.toPoint();
+                image_geom->geom_where = new_pos;
+                list_item->setData(Qt::DisplayRole, QVariant(image_geom->text()));
+            }
             break;
         default:
             ;

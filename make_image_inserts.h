@@ -59,6 +59,17 @@ static inline QString int_to_QString(int i)
 
 class geom_angle {
 public:
+    geom_angle(void) {
+        geom_size = QSize(0,0);
+        geom_where = QPoint(0,0);
+        rotation_degrees = 0;
+    };
+    geom_angle(const geom_angle &new_geom) {
+        geom_size = new_geom.geom_size;
+        geom_where = new_geom.geom_where;
+        rotation_degrees = new_geom.rotation_degrees;
+    };
+
     QSize geom_size;            /* geometry WidthxHeight */
     QPoint geom_where;          /* geometry location x+y */
     double rotation_degrees;    /* rotation of insertion image before insert */
@@ -133,7 +144,7 @@ private:
     QString insert_dir;
     QString template_dir;
     QStringList insert_strings;
-    QList<geom_angle> insert_geoms;
+    QList<geom_angle *> insert_geoms;
     QList<QImage> insert_images;
     QList<QListWidgetItem *> removed_inserts;
 };

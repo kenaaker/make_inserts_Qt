@@ -30,7 +30,7 @@ void make_image_inserts::on_actionQuit_triggered() {
     exit(0);
 }
 
-const geom_angle *convert_str_to_geom(QString in_str) {
+geom_angle *convert_str_to_geom(QString in_str) {
     QRegExp rx("([0-9]+)x([0-9]+)\\+([0-9]+)\\+([0-9]+)(?:$|/([0-9]+)$)");
 //    QRegExp rx("[0-9]+x[0-9]+");
     geom_angle *new_geom = new geom_angle;
@@ -123,14 +123,15 @@ void make_image_inserts::on_actionOpenTemplateImage_triggered() {
             QString this_value;
             this_key = *i;
             if (this_key.startsWith("insert_loc_")) {
-                const geom_angle *working_geom;
+                geom_angle *working_geom;
+                QListWidgetItem *this_item;
                 insert_rect *this_rect;
                 this_value = template_image.text(this_key);
                 working_geom = convert_str_to_geom(this_value);
                 insert_strings.push_back(this_value);
-                insert_geoms.push_back(*working_geom);
-                ui->insertion_points->addItem(this_value);
-                this_rect = new insert_rect(QRectF(QPoint(0,0), working_geom->geom_size), 0, working_geom);
+                insert_geoms.push_back(working_geom);
+                this_item = new QListWidgetItem(this_value, ui->insertion_points);
+                this_rect = new insert_rect(QRectF(QPoint(0,0), working_geom->geom_size), 0, working_geom, this_item);
                 this_rect->setTransformOriginPoint(working_geom->geom_size.width()/2, working_geom->geom_size.height()/2);
                 this_rect->setRotation(working_geom->rotation_degrees);
                 this_rect->setPos(QPointF(working_geom->geom_where));
@@ -197,7 +198,8 @@ static void set_inserts(QImage &out, QStringList &inserts) {
 } /* copy_text_keys */
 
 void make_image_inserts::on_actionInsert_images_into_template_triggered() {
-    QList<geom_angle>::iterator this_insert;
+    QList<geom_angle *>::iterator insert_iter;
+    geom_angle *this_insert;
     QImage tmp_img = template_image;
     QImage result(tmp_img.width(), tmp_img.height(), QImage::Format_ARGB32_Premultiplied);
     QPainter pt(&result);
@@ -205,7 +207,8 @@ void make_image_inserts::on_actionInsert_images_into_template_triggered() {
     pt.setBackgroundMode(Qt::TransparentMode);
     bool error = false;
 
-    for (this_insert = insert_geoms.begin(); this_insert != insert_geoms.end(); ++this_insert) {
+    for (insert_iter = insert_geoms.begin(); insert_iter != insert_geoms.end(); ++insert_iter) {
+        this_insert = *insert_iter;
         QList<QListWidgetItem *> current_selections(ui->listWidget->selectedItems());
         if (current_selections.isEmpty()) {
             QMessageBox select_an_insert;
@@ -293,13 +296,13 @@ void make_image_inserts::on_actionSave_As_triggered() {
 }
 
 void make_image_inserts::on_add_insert_button_clicked() {
-    geom_angle this_geom;
-    this_geom.geom_size = QSize(QString_to_int(ui->width->text()), QString_to_int(ui->height->text()));
-    this_geom.geom_where =QPoint(QString_to_int(ui->xoffset->text()), QString_to_int(ui->yoffset->text()));
-    this_geom.rotation_degrees = (QString_to_int(ui->rotation->text()));
+    geom_angle *this_geom = new geom_angle();
+    this_geom->geom_size = QSize(QString_to_int(ui->width->text()), QString_to_int(ui->height->text()));
+    this_geom->geom_where =QPoint(QString_to_int(ui->xoffset->text()), QString_to_int(ui->yoffset->text()));
+    this_geom->rotation_degrees = (QString_to_int(ui->rotation->text()));
     insert_geoms.push_back(this_geom);
-    insert_strings.push_back(this_geom.text());
-    ui->insertion_points->addItem(this_geom.text());
+    insert_strings.push_back(this_geom->text());
+    ui->insertion_points->addItem(this_geom->text());
 }
 
 void make_image_inserts::on_delete_insert_button_clicked() {
@@ -320,21 +323,21 @@ void make_image_inserts::on_delete_insert_button_clicked() {
 
 void make_image_inserts::on_insertion_points_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
     if (current) {
-        geom_angle this_geom = insert_geoms.at(ui->insertion_points->row(current));
+        geom_angle *this_geom = insert_geoms.at(ui->insertion_points->row(current));
         QString item_string;
-        item_string = int_to_QString(this_geom.geom_size.width());
+        item_string = int_to_QString(this_geom->geom_size.width());
         ui->width->setText(item_string);
 
-        item_string = int_to_QString(this_geom.geom_size.height());
+        item_string = int_to_QString(this_geom->geom_size.height());
         ui->height->setText(item_string);
 
-        item_string = int_to_QString(this_geom.geom_where.x());
+        item_string = int_to_QString(this_geom->geom_where.x());
         ui->xoffset->setText(item_string);
 
-        item_string = int_to_QString(this_geom.geom_where.y());
+        item_string = int_to_QString(this_geom->geom_where.y());
         ui->yoffset->setText(item_string);
 
-        item_string = int_to_QString(this_geom.rotation_degrees);
+        item_string = int_to_QString(this_geom->rotation_degrees);
         ui->rotation->setText(item_string);
     } /* endif */
 }
@@ -346,7 +349,7 @@ void make_image_inserts::on_update_insert_button_clicked() {
     this_geom.geom_size = QSize(QString_to_int(ui->width->text()), QString_to_int(ui->height->text()));
     this_geom.geom_where =QPoint(QString_to_int(ui->xoffset->text()), QString_to_int(ui->yoffset->text()));
     this_geom.rotation_degrees = (QString_to_int(ui->rotation->text()));
-    insert_geoms[ui->insertion_points->row(current)] = this_geom;
+    *insert_geoms[ui->insertion_points->row(current)] = this_geom;
     /* Watch out here, this assumes the lists are in the same order */
     insert_strings[ui->insertion_points->row(current)] = (this_geom.text());
     current->setText(this_geom.text());
